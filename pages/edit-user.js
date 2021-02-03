@@ -9,10 +9,31 @@ const EditUser = () => {
     const [firstName, setFirstName] = useState('');
     const [secondName, setSecondName] = useState('');
     const [description, setDescription] = useState('');
+
     const submitHandler = async (event) => {
         event.preventDefault();
         // Save Details
+        const currentUser = await Auth.currentAuthenticatedUser();
+        console.log(currentUser)
+
+        try {
+            const result = await API.graphql({
+                query: createUser,
+                variables: {
+                    input: {
+                        id: currentUser.attributes.sub,
+                        firstName: firstName,
+                        lastName: secondName,
+                        description: description
+                    }
+                }
+            })
+            console.log(result)
+        } catch (err) {
+            console.log(err);
+        }
     };
+
     return (
         <div className="d-flex flex-column justify-content-center w-100 h-100">
             <Navbar />
