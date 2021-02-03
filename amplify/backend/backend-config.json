@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "nextprofileapp9b08b0e9": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
