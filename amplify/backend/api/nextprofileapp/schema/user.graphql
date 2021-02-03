@@ -1,7 +1,9 @@
 type User @model {
-    id: ID!
-    firstName: String
-    lastName: String
-    description: "String"
-    image: String
+  id: ID!
+  firstName: String
+  lastName: String
+  userName: String
+  email: String
+  description: String
+  image: String
 }
