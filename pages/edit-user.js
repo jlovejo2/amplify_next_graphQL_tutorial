@@ -54,6 +54,7 @@ const EditUser = ({ error, user, mode } ) => {
     const [userImage, setUserImage] = useState(null);
     
     const imageUploadHandler = (event) => {
+        console.log('image: ', event.target.files[0])
         setUserImage(event.target.files[0]);
     }
 
@@ -64,11 +65,23 @@ const EditUser = ({ error, user, mode } ) => {
         console.log(currentUser)
 
         try {
+            let key = null;
+            if(userImage) {
+                key = `${uuid()}${user.firstName}`
+
+                if(user.image) {
+                    await Storage.remove(user.image);
+                }
+                await Storage.put(key, userImage, {
+                    contentType: userImage.type,
+                });
+            }
             const result = await API.graphql({
                 query: mode === 'EDIT' ? updateUser : createUser,
                 variables: {
                     input: {
                         id: currentUser.attributes.sub,
+                        image: userImage ? key : user.image,
                         firstName: firstName,
                         lastName: secondName,
                         description: description
