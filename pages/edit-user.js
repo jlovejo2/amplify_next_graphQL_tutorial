@@ -6,6 +6,10 @@ import {withSSRContext} from "aws-amplify";
 import { API } from "@aws-amplify/api";
 import { Auth } from  "@aws-amplify/auth";
 import Navbar from "../components/Navbar";
+import ImageUploader from "../components/ImageUploader";
+import { AmplifyS3Image } from "@aws-amplify/ui-react";
+import { Storage } from "@aws-amplify/storage";
+import { v4 as uuid } from "uuid";
 
 export async function getServerSideProps({req, res}) {
     const {Auth, API} = withSSRContext({req});
@@ -46,6 +50,12 @@ const EditUser = ({ error, user, mode } ) => {
     const [firstName, setFirstName] = useState(mode === 'EDIT' ? user.firstName : '');
     const [secondName, setSecondName] = useState(mode === 'EDIT' ? user.lastName : '');
     const [description, setDescription] = useState(mode === 'EDIT' ? user.description : '');
+    const [editImage, setEditImage ] = useState(!user.image);
+    const [userImage, setUserImage] = useState(null);
+    
+    const imageUploadHandler = (event) => {
+        setUserImage(event.target.files[0]);
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
@@ -86,6 +96,24 @@ const EditUser = ({ error, user, mode } ) => {
             <Navbar />
             <h1 className="align-self-center">Edit User Details</h1>
             <Form className="w-50 align-self-center">
+                {editImage && (
+                    <ImageUploader
+                        imageUploadHandler={imageUploadHandler}
+                        image={userImage}
+                    />
+                )}
+                {!editImage && (
+                    <div>
+                        <button
+                            type="button"
+                            className="btn m-2 btn-outline-primary"
+                            onClick={() => setEditImage(true)}
+                        >
+                            Edit Image
+                        </button>
+                        <AmplifyS3Image imgKey={user.image} />
+                    </div>
+                )}
                 <Form.Group className="mt-2" controlId="firstName">
                     <Form.Label>First Name</Form.Label>
                     <Form.Control
